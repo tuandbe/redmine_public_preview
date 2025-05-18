@@ -64,9 +64,9 @@ Allows generating a time-limited public preview link for issues in Redmine. This
     <pre>
     sudo systemctl restart redmine
     </pre>
-    Or, if you use `touch tmp/restart.txt`:
+    For Bitnami installations:
     <pre>
-    touch tmp/restart.txt
+    sudo /opt/bitnami/ctlscript.sh restart
     </pre>
 
 == Configuration
