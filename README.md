@@ -42,7 +42,15 @@ Allows generating a time-limited public preview link for issues in Redmine. This
     </pre>
     *Note: If your plugin had specific gems in its own Gemfile, you might need `bundle install` from the plugin's directory, but usually, Redmine plugins manage dependencies via the main Gemfile or checks in `init.rb`.*
 
-4.  **Run plugin migrations.**
+4.  **Copy plugin assets.**
+    This command copies assets like stylesheets, javascripts, and images from the plugin to a publicly accessible directory.
+    <pre>
+    RAILS_ENV=production bundle exec rake redmine:plugins:assets
+    # Or, for newer Rails syntax often used with Redmine 5:
+    # RAILS_ENV=production bundle exec bin/rails redmine:plugins:assets
+    </pre>
+
+5.  **Run plugin migrations.**
     This command will create the necessary database tables for the plugin.
     <pre>
     RAILS_ENV=production bundle exec rake redmine:plugins:migrate
@@ -50,7 +58,7 @@ Allows generating a time-limited public preview link for issues in Redmine. This
     # RAILS_ENV=production bundle exec bin/rails redmine:plugins:migrate
     </pre>
 
-5.  **Restart the Redmine application server.**
+6.  **Restart the Redmine application server.**
     This step depends on how you are running Redmine (e.g., Puma, Passenger, Unicorn).
     Example for Puma (if you manage it with `systemd` or a similar tool):
     <pre>
@@ -101,13 +109,19 @@ Allows generating a time-limited public preview link for issues in Redmine. This
     # RAILS_ENV=production bundle exec bin/rails redmine:plugins:migrate NAME=redmine_public_preview VERSION=0
     </pre>
 
-3.  **Remove the plugin directory.**
+3.  **Remove plugin assets.**
+    While not always strictly necessary as they won't be used, it's good practice to clean up.
+    <pre>
+    rm -rf public/plugin_assets/redmine_public_preview
+    </pre>
+
+4.  **Remove the plugin directory.**
     <pre>
     rm -rf plugins/redmine_public_preview
     </pre>
 
-4.  **Restart the Redmine application server.**
-    (Refer to step 5 in the Installation section).
+5.  **Restart the Redmine application server.**
+    (Refer to step 6 in the Installation section).
 
 == Notes on Patching
 This plugin patches Redmine's `AttachmentsController` to allow public access to attachments via the preview token. This is done by:
