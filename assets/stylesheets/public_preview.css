@@ -1,0 +1,233 @@
+/*
+  Stylesheet for Redmine Public Issue Preview
+  Inspired by Facebook post styling
+*/
+
+body.controller-public_issue_previews {
+  background-color: #f0f2f5; /* Facebook-like background */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top for long content */
+  min-height: 100vh;
+}
+
+.public-preview-card {
+  background-color: #ffffff;
+  border: 1px solid #dddfe2;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Center the card */
+  max-width: 680px; /* Typical width for Facebook posts */
+  width: 100%;
+  overflow: hidden; /* Contains floated elements and rounded corners */
+}
+
+/* More specific selectors for the preview card and its header */
+body.controller-public_issue_previews .public-preview-card .preview-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e9ebee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ensure text within each header item is also centered with higher specificity */
+body.controller-public_issue_previews .public-preview-card .preview-header h1,
+body.controller-public_issue_previews .public-preview-card .preview-header .preview-issue-id,
+body.controller-public_issue_previews .public-preview-card .preview-header .preview-source-tag {
+  text-align: center;
+}
+
+body.controller-public_issue_previews .public-preview-card .preview-header h1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1c1e21;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+body.controller-public_issue_previews .public-preview-card .preview-header .preview-issue-id {
+  font-size: 0.9rem;
+  color: #606770;
+  display: block;
+  margin-bottom: 4px;
+}
+
+body.controller-public_issue_previews .public-preview-card .preview-header .preview-source-tag {
+  font-size: 0.8rem;
+  color: #606770;
+  background-color: #e7f3ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.preview-content {
+  padding: 12px 16px;
+  font-size: 0.95rem; /* Adjusted from 1rem to 0.95rem */
+  line-height: 1.5;
+  color: #1c1e21;
+}
+
+/* Styles for Redmine's .wiki class content */
+.preview-content .wiki {
+  word-wrap: break-word;
+}
+
+.preview-content .wiki h1,
+.preview-content .wiki h2,
+.preview-content .wiki h3,
+.preview-content .wiki h4 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #1c1e21;
+}
+
+.preview-content .wiki p {
+  margin-bottom: 1em;
+}
+
+.preview-content .wiki ul,
+.preview-content .wiki ol {
+  margin-left: 20px;
+  margin-bottom: 1em;
+}
+
+.preview-content .wiki pre {
+  background-color: #f0f2f5;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: monospace;
+}
+
+.preview-content .wiki blockquote {
+  border-left: 3px solid #dddfe2;
+  padding-left: 10px;
+  margin-left: 0;
+  color: #606770;
+}
+
+/* Also ensure images are centered with high specificity if they are still an issue */
+body.controller-public_issue_previews .public-preview-card .preview-content .wiki img {
+  display: block; 
+  max-width: 100%; 
+  height: auto;    
+  margin-top: 15px; 
+  margin-bottom: 15px;
+  margin-left: auto;  
+  margin-right: auto; 
+  border-radius: 4px; 
+  border: 1px solid #ccd0d5; 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Optional Footer Styling */
+.preview-footer {
+  padding: 10px 16px;
+  border-top: 1px solid #e9ebee;
+  font-size: 0.8rem;
+  color: #606770;
+  text-align: right;
+}
+
+/* --- Responsive Design --- */
+
+/* Tablet */
+@media (max-width: 768px) {
+  body.controller-public_issue_previews {
+    padding: 10px;
+  }
+  .public-preview-card {
+    max-width: 95%;
+  }
+  .preview-header h1 {
+    font-size: 1.05rem; /* Adjusted for tablet */
+  }
+  .preview-content {
+    font-size: 0.92rem; /* Adjusted for tablet */
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  body.controller-public_issue_previews {
+    padding: 0; /* Full width on mobile */
+    background-color: #ffffff; /* Card merges with background */
+  }
+  .public-preview-card {
+    margin: 0;
+    border-radius: 0; /* No border radius on mobile for full width */
+    border-left: none;
+    border-right: none;
+    box-shadow: none; /* Simpler look */
+    max-width: 100%;
+  }
+  .preview-header {
+    padding: 10px 12px;
+  }
+  .preview-header h1 {
+    font-size: 1rem; /* Adjusted for mobile */
+  }
+  .preview-header .preview-issue-id {
+    font-size: 0.85rem;
+  }
+  .preview-header .preview-source-tag {
+    font-size: 0.75rem;
+  }
+  .preview-content {
+    padding: 10px 12px;
+    font-size: 0.9rem; /* Adjusted for mobile */
+  }
+}
+
+/* Add styles for the public preview container */
+.public-preview-container {
+  max-width: 900px; /* Adjust as needed */
+  margin: 20px auto; /* Adds some margin top/bottom and centers horizontally */
+  padding: 20px;
+  background-color: #fff; /* White background, removes yellow */
+  border: 1px solid #ddd; /* Optional: adds a light border */
+  box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Optional: adds a subtle shadow */
+}
+
+.public-preview-container h2 {
+  font-size: 2em; /* Larger font size for the title */
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.public-preview-container .issue-details .wiki {
+  font-size: 1.1em; /* Slightly larger font size for the content */
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Remove default yellow background from .issue or other elements if necessary */
+/* For example, if the .issue class from core Redmine is still applying a background */
+body.controller-public_issue_previews.action-show div.issue {
+  background-color: transparent;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .public-preview-container {
+    margin: 10px;
+    padding: 15px;
+  }
+  .public-preview-container h2 {
+    font-size: 1.8em;
+  }
+  .public-preview-container .issue-details .wiki {
+    font-size: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .public-preview-container h2 {
+    font-size: 1.5em;
+  }
+} 

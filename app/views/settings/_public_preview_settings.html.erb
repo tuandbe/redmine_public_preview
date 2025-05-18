@@ -1,0 +1,15 @@
+<% trackers = Tracker.sorted.to_a %>
+
+<p>
+  <label><%= l(:label_public_preview_settings_trackers) %></label>
+  <% trackers.each do |tracker| %>
+    <label class="block">
+      <%= check_box_tag 'settings[trackers][]', tracker.id, 
+          @settings['trackers'] && @settings['trackers'].include?(tracker.id.to_s),
+          :id => "settings_trackers_#{tracker.id}" %>
+      <%= tracker.name %>
+    </label>
+  <% end %>
+  <%= hidden_field_tag 'settings[trackers][]', '' %>
+  <em class="info"><%= l(:text_public_preview_tracker_explanation) %></em>
+</p> 

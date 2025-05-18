@@ -1,0 +1,27 @@
+# English strings go here for Rails i18n
+en:
+  # my_label: "My label"
+  button_generate_public_preview: "Generate Public Preview"
+  title_public_issue_preview: "iCMS Preview"
+  notice_public_preview_link_generation_failed: "Failed to generate public preview link."
+  error_public_preview_link_invalid_or_expired: "The public preview link is invalid or has expired."
+  notice_issue_not_found: "Issue not found."
+  permission_generate_public_issue_previews: "Generate public issue previews"
+  # If you create a separate project module:
+  # project_module_public_issue_preview_module: "Public Issue Preview"
+
+  # New strings
+  button_copy_public_preview_link: "Copy preview link"
+  title_open_public_preview_link: "Open public preview link" # If you use a separate open button
+  notice_public_preview_link_copied: "Public preview link copied to clipboard."
+  error_public_preview_link_copy_failed: "Failed to copy public preview link. Your browser may not support this feature or requires HTTPS."
+
+  # Settings strings
+  label_public_preview_settings_trackers: "Enable Public Preview for the following trackers:"
+  text_public_preview_tracker_explanation: "The Public Preview button will only be displayed for issues of the selected trackers. If no trackers are selected, the button will be displayed for all trackers."
+
+  # Sub-task feature strings
+  button_create_subtask: "Create Sub-task"
+  title_create_design_subtask: "Create sub-task for design order"
+  error_brief_required: "Error: Brief ảnh Od must be filled before creating a subtask"
+  subtask_order_prefix: "[Order Ảnh]"

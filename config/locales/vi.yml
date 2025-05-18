@@ -1,0 +1,24 @@
+vi:
+  button_generate_public_preview: "Xem trước công khai"
+  title_public_issue_preview: "iCMS Preview"
+  notice_public_preview_link_generation_failed: "Tạo liên kết xem trước công khai thất bại."
+  error_public_preview_link_invalid_or_expired: "Liên kết xem trước công khai không hợp lệ hoặc đã hết hạn."
+  notice_issue_not_found: "Không tìm thấy issue."
+  permission_generate_public_issue_previews: "Tạo liên kết xem trước issue công khai"
+  # project_module_public_issue_preview_module: "Module Xem trước Issue Công khai"
+
+  # New strings
+  button_copy_public_preview_link: "Sao chép liên kết xem trước"
+  title_open_public_preview_link: "Mở liên kết xem trước công khai"
+  notice_public_preview_link_copied: "Đã sao chép liên kết xem trước công khai vào bộ nhớ đệm."
+  error_public_preview_link_copy_failed: "Sao chép liên kết xem trước công khai thất bại. Trình duyệt của bạn có thể không hỗ trợ tính năng này hoặc yêu cầu HTTPS." 
+
+  # Settings strings
+  label_public_preview_settings_trackers: "Bật Xem trước công khai cho các tracker sau:"
+  text_public_preview_tracker_explanation: "Nút Xem trước công khai sẽ chỉ hiển thị cho các issues thuộc tracker đã chọn. Nếu không chọn tracker nào, nút sẽ hiển thị cho tất cả tracker." 
+  
+  # Sub-task feature strings
+  button_create_subtask: "Tạo sub-task"
+  title_create_design_subtask: "Tạo sub-task cho order ảnh"
+  error_brief_required: "Lỗi: Cần nhập Brief ảnh Od trước khi tạo subtask"
+  subtask_order_prefix: "[Order Ảnh]"

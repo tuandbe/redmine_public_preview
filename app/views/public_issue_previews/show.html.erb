@@ -1,0 +1,19 @@
+<% if @issue %>
+  <div class="public-preview-container">
+    <h2><%= h @issue.subject %> (#<%= @issue.id %>)</h2>
+    <div class="issue-details">
+      <div class="description">
+        <div class="wiki">
+          <% if @preview_token && @preview_token.value.present? %>
+            <%= format_description_for_public_preview(textilizable(@issue, :description, only_path: false), @preview_token.value) %>
+          <% else %>
+            <%# Fallback or error if token is not available, though controller should prevent this %>
+            <%= textilizable @issue, :description, only_path: false %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% else %>
+  <p><%= l(:notice_issue_not_found) %></p>
+<% end %>
