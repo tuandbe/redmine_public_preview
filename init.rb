@@ -6,59 +6,21 @@ require 'logger'
 # Log message to indicate the init.rb file is being loaded
 Rails.logger.info "[PublicPreviewPlugin] Loading init.rb of redmine_public_preview plugin"
 
-# Direct patch to AttachmentsController - We do this directly in init.rb for reliability
-require_dependency 'attachments_controller'
-
-# Only execute this code if AttachmentsController is defined and available
-if defined?(AttachmentsController)
-  Rails.logger.info "[PublicPreviewPlugin] Found AttachmentsController, patching read_authorize..."
-  
-  # Apply the patch to AttachmentsController
-  AttachmentsController.class_eval do
-    # Store a reference to the original method first
-    alias_method :read_authorize_without_public_preview, :read_authorize
-    
-    # Define new implementation that checks for public preview tokens
-    def read_authorize
-      token_value = params[:public_preview_token]
-      
-      if token_value.present? && @attachment && 
-         @attachment.container_type == 'Issue' && @attachment.container_id.present?
-        
-        # Look for a valid token for this issue
-        public_token = PublicPreviewToken.find_by(
-          value: token_value, 
-          issue_id: @attachment.container_id
-        )
-        
-        # If token exists and is not expired, allow access
-        if public_token && public_token.expires_at > Time.current
-          Rails.logger.debug "[PublicPreviewPlugin] Granting access to attachment via public preview token"
-          return true
-        end
-      end
-      
-      # Fall back to the original method if no valid token
-      read_authorize_without_public_preview
-    end
-    
-    Rails.logger.info "[PublicPreviewPlugin] Successfully patched read_authorize method"
-  end
-else
-  Rails.logger.warn "[PublicPreviewPlugin] AttachmentsController not found! Cannot patch."
-end
-
-# Đăng ký JavaScript assets - cách thức đúng cho Redmine 5 (Rails 6+)
-# Cách này chỉ áp dụng khi plugin của bạn có thư mục assets
-Rails.application.config.to_prepare do
-  path = File.join(File.dirname(__FILE__), 'assets', 'javascripts')
-  Redmine::Plugin.register :redmine_public_preview do
-    requires_redmine version_or_higher: '5.0.0'
-  end
-end
+# The following to_prepare block for assets seems problematic, especially the inner Redmine::Plugin.register call.
+# Redmine typically handles asset loading through standard Rails/Sprockets conventions for plugins.
+# Commenting out for now to simplify and avoid potential conflicts.
+# Rails.application.config.to_prepare do
+#   path = File.join(File.dirname(__FILE__), 'assets', 'javascripts')
+#   # The Redmine::Plugin.register call here is likely redundant and potentially problematic.
+#   # The main registration block is below.
+#   # Consider removing this inner registration if it causes issues or is not strictly needed for asset loading.
+#   # Redmine::Plugin.register :redmine_public_preview do
+#   #   requires_redmine version_or_higher: '5.0.0'
+#   # end
+# end
 
 # Register the plugin with Redmine
-Redmine::Plugin.register :redmine_public_preview do
+Redmine::Plugin.register :redmine_public_preview do |plugin|
   name 'Redmine Public Issue Preview Plugin'
   author 'tuandbe'
   description 'Allows generating a time-limited public preview link for issues.'
@@ -71,30 +33,39 @@ Redmine::Plugin.register :redmine_public_preview do
   settings default: { 'trackers' => [] }, partial: 'settings/public_preview_settings'
 
   # Permission to generate public preview links
-  # This will be checked in PublicIssuePreviewsController#generate
-  # and in the hook to decide whether to display the button
-  project_module :issue_tracking do # Attach to the existing issue_tracking module or create a new one
+  project_module :issue_tracking do
     permission :generate_public_issue_previews, { public_issue_previews: [:generate] }, require: :member
   end
 
-  # If you want to create a separate project module for this plugin:
-  # project_module :public_issue_preview_module do |map|
-  #   map.permission :generate_public_issue_previews, { public_issue_previews: [:generate] }, require: :member
-  # end
-end
+  # Apply AttachmentsController patch directly during plugin registration
+  begin
+    patch_file_path = File.join(
+      File.dirname(__FILE__),
+      'lib', 
+      'redmine_public_preview',
+      'patches',
+      'attachments_controller_patch.rb'
+    )
+    require_dependency patch_file_path
 
-# Ensure the patches and assets are loaded correctly
-Rails.application.config.to_prepare do
-  # Require the patch file here, inside to_prepare, to ensure it reloads in development
-  require_dependency File.join(File.dirname(__FILE__), 'lib', 'redmine_public_preview', 'patches', 'attachments_controller_patch')
+    patch_module = RedminePublicPreview::Patches::AttachmentsControllerPatch
 
-  # Apply the patch
-  Rails.logger.info "[PublicPreviewInit] In Rails.application.config.to_prepare block for applying AttachmentsControllerPatch (init.rb)"
-  unless AttachmentsController.included_modules.include?(RedminePublicPreview::Patches::AttachmentsControllerPatch)
-    AttachmentsController.prepend(RedminePublicPreview::Patches::AttachmentsControllerPatch)
-    Rails.logger.info "[PublicPreviewInit] AttachmentsControllerPatch prepended to AttachmentsController via init.rb."
-  else
-    Rails.logger.info "[PublicPreviewInit] AttachmentsControllerPatch already included in AttachmentsController (checked in init.rb)."
+    if defined?(AttachmentsController) && AttachmentsController.is_a?(Class)
+      unless AttachmentsController.included_modules.include?(patch_module)
+        AttachmentsController.prepend(patch_module)
+        Rails.logger.info "[PublicPreviewPlugin] Successfully prepended AttachmentsControllerPatch to AttachmentsController during registration."
+      else
+        Rails.logger.info "[PublicPreviewPlugin] AttachmentsControllerPatch already included in AttachmentsController (checked during registration)."
+      end
+    else
+      Rails.logger.error "[PublicPreviewPlugin] AttachmentsController is not defined or not a Class. Cannot apply patch."
+    end
+  rescue LoadError => e
+    Rails.logger.error "[PublicPreviewPlugin] Error loading AttachmentsControllerPatch: #{e.message}\nBacktrace:\n#{e.backtrace.join("\n")}"
+  rescue NameError => e
+    Rails.logger.error "[PublicPreviewPlugin] Error finding AttachmentsControllerPatch module: #{e.message}\nBacktrace:\n#{e.backtrace.join("\n")}"
+  rescue StandardError => e
+    Rails.logger.error "[PublicPreviewPlugin] Unexpected error applying AttachmentsControllerPatch: #{e.message}\nBacktrace:\n#{e.backtrace.join("\n")}"
   end
 end
 

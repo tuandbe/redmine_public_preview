@@ -1,4 +1,7 @@
 class PublicIssuePreviewsController < ApplicationController
+  # Skip the global login check for the public show action
+  skip_before_action :check_if_login_required, only: [:show]
+
   # Layout for the public preview page, will be created later
   layout 'public_preview', only: [:show]
 
