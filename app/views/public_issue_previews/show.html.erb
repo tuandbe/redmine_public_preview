@@ -3,17 +3,43 @@
     <h2><%= h @issue.subject %> (#<%= @issue.id %>)</h2>
     <div class="issue-details">
       <div class="description">
-        <div class="wiki">
-          <% if @preview_token && @preview_token.value.present? %>
-            <%= format_description_for_public_preview(textilizable(@issue, :description, only_path: false), @preview_token.value) %>
-          <% else %>
-            <%# Fallback or error if token is not available, though controller should prevent this %>
-            <%= textilizable @issue, :description, only_path: false %>
+        <div class="wiki" id="public-preview-description">
+          <%# We will render the description directly without server-side Nokogiri processing for tokens %>
+          <% if @issue.description? %>
+            <%= textilizable(@issue, :description, only_path: false) %>
           <% end %>
         </div>
       </div>
     </div>
   </div>
+
+  <% if @preview_token && @preview_token.value.present? %>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const previewToken = "<%= j @preview_token.value %>";
+        const descriptionArea = document.getElementById('public-preview-description');
+        const currentOrigin = window.location.origin; // e.g., http://localhost:3000
+
+        if (descriptionArea && previewToken) {
+          const images = descriptionArea.querySelectorAll('img');
+          images.forEach(function(img) {
+            let src = img.getAttribute('src');
+            if (src && src.includes('/attachments/download/')) {
+              // Check if it's a relative URL OR an absolute URL pointing to the current Redmine instance
+              if (src.startsWith('/') || src.startsWith(currentOrigin)) {
+                if (src.includes('?')) {
+                  img.setAttribute('src', src + '&public_preview_token=' + encodeURIComponent(previewToken));
+                } else {
+                  img.setAttribute('src', src + '?public_preview_token=' + encodeURIComponent(previewToken));
+                }
+              }
+            }
+          });
+        }
+      });
+    </script>
+  <% end %>
+
 <% else %>
   <p><%= l(:notice_issue_not_found) %></p>
 <% end %>
