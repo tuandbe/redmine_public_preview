@@ -23,8 +23,8 @@ Rails.logger.info "[PublicPreviewPlugin] Loading init.rb of redmine_public_previ
 Redmine::Plugin.register :redmine_public_preview do |plugin|
   name 'Redmine Public Issue Preview Plugin'
   author 'tuandbe'
-  description 'Allows generating a time-limited public preview link for issues.'
-  version '0.0.1'
+  description 'Allows generating a time-limited public preview link for issues. Now supports attachments from child issues.'
+  version '0.0.2'
   url 'https://github.com/tuandbe/redmine_public_preview'
   author_url 'https://github.com/tuandbe/redmine_public_preview'
   requires_redmine version_or_higher: '5.0.0'

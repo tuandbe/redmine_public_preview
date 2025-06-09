@@ -9,6 +9,7 @@ Allows generating a time-limited public preview link for issues in Redmine. This
 == Features
 * Generate unique, time-limited public preview links for issues.
 * Allow public access to issue details and attachments via the generated link.
+* **Compatibility with `redmine_child_attachments`**: Public previews of a parent issue will now correctly display attachments that are part of its child issues.
 * Configurable: administrators can select which trackers are eligible for public previews.
 * Permission-based: only users with the "Generate public issue previews" permission can create these links.
 * Supports Redmine 5.0.0 and higher.
