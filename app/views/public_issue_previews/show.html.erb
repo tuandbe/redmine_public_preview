@@ -21,18 +21,29 @@
         const currentOrigin = window.location.origin; // e.g., http://localhost:3000
 
         if (descriptionArea && previewToken) {
+          function addTokenToUrl(url) {
+            if (!url) return url;
+            // Check if it's a relative URL or an absolute URL for this Redmine instance
+            if (url.startsWith('/') || url.startsWith(currentOrigin)) {
+              const connector = url.includes('?') ? '&' : '?';
+              return url + connector + 'public_preview_token=' + encodeURIComponent(previewToken);
+            }
+            return url;
+          }
+
+          // Update image sources from attachments
           const images = descriptionArea.querySelectorAll('img');
           images.forEach(function(img) {
-            let src = img.getAttribute('src');
-            if (src && src.includes('/attachments/download/')) {
-              // Check if it's a relative URL OR an absolute URL pointing to the current Redmine instance
-              if (src.startsWith('/') || src.startsWith(currentOrigin)) {
-                if (src.includes('?')) {
-                  img.setAttribute('src', src + '&public_preview_token=' + encodeURIComponent(previewToken));
-                } else {
-                  img.setAttribute('src', src + '?public_preview_token=' + encodeURIComponent(previewToken));
-                }
-              }
+            if (img.src && (img.src.includes('/attachments/download/') || img.src.includes('/attachments/thumbnail/'))) {
+              img.src = addTokenToUrl(img.src);
+            }
+          });
+
+          // Update general attachment links
+          const links = descriptionArea.querySelectorAll('a.attachment');
+          links.forEach(function(link) {
+            if (link.href) {
+              link.href = addTokenToUrl(link.href);
             }
           });
         }
